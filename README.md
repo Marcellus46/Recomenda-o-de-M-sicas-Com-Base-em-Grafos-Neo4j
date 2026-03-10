@@ -2,47 +2,43 @@
 Projeto de Sistema de Recomendações de Músicas em Grafos Neo4j
 
 
-## 🎵 Sistema de Recomendação de Músicas com Neo4j (Graph Database)
+## 🎵 Sistema de Recomendação de Músicas com Neo4j (Graph Database).
 
 Projeto de estudo utilizando Neo4j para construir um algoritmo simples de recomendação de músicas baseado em grafos.
 
-A ideia central é representar usuários, músicas, artistas e gêneros como nós conectados, permitindo descobrir padrões e recomendações com facilidade.
+A ideia central é representar usuários, músicas, artistas e gêneros como nós conectados, permitindo descobrir padrões e recomendações com facilidade. Este projeto é apenas um protótipo educacional, mas demonstra como sistemas de streaming podem usar grafos para gerar recomendações inteligentes. Podendo ser adaptado para qualquer cenário. 
 
-Este projeto é apenas um protótipo educacional, mas demonstra como sistemas de streaming podem usar grafos para gerar recomendações inteligentes. Podendo ser adaptado para qualquer cenário. 
+📌 1. Problema.
 
-📌 1. Problema
-
-Plataformas de música precisam sugerir novas músicas para os usuários.
-
-Modelos tradicionais baseados em tabelas podem ter dificuldade para analisar muitas conexões entre usuários, músicas e preferências.
+Plataformas de música precisam sugerir novas músicas para os usuários. Modelos tradicionais baseados em tabelas podem ter dificuldade para analisar muitas conexões entre usuários, músicas e preferências.
 
 Por exemplo:
 
-usuários que gostam de artistas parecidos
+- Usuários que gostam de artistas parecidos;
 
-usuários com gostos musicais similares
+- Usuários com gostos musicais similares;
 
-músicas populares entre amigos
+- Músicas populares entre amigos;
 
-artistas relacionados ao mesmo gênero
+- Artistas relacionados ao mesmo gênero;
 
 Grafos são ideais para esse tipo de problema porque relacionamentos são tratados como elementos principais do banco de dados. Diferentes de Bancos de Dados Tradicionais em Tabelas.
 
-🧠 2. Por que usar Grafos?
+🧠 2. Por que usar Grafos?.
 
 Bancos relacionais funcionam bem para dados estruturados, mas recomendações dependem muito de conexões.
 
 Com grafos podemos facilmente descobrir:
 
-músicas ouvidas por amigos
+- Músicas ouvidas por amigos
 
-artistas relacionados a um gênero
+- Artistas relacionados a um gênero
 
-músicas populares entre usuários com gostos semelhantes
+- Músicas populares entre usuários com gostos semelhantes
 
 Neo4j permite navegar nesses relacionamentos de forma muito rápida e natural.
 
-🧩 3. Modelo do Grafo
+🧩 3. Modelo do Grafo.
 
 Após análise do esboço inicial, a modelagem recomendada ficou assim:
 
@@ -93,7 +89,7 @@ CALL db.schema.visualization()
 
 Isso gera uma visualização automática do modelo do grafo.
 
-📂 4. Dataset de Exemplo
+📂 4. Dataset de Exemplo.
 
 Arquivo exemplo:
 
@@ -115,37 +111,43 @@ usuario_id,nome
 3,Lika
 4,Ticio
 5,Mervio
-⚙️ 5. Scripts de Carga (Cypher)
+
+⚙️ 5. Scripts de Carga (Cypher).
+
 Criando Usuários
 LOAD CSV WITH HEADERS FROM 'file:///usuarios.csv' AS row
 CREATE (:Usuario {
     id: row.usuario_id,
     nome: row.nome
 });
+
 Criando Músicas
 LOAD CSV WITH HEADERS FROM 'file:///musicas.csv' AS row
 CREATE (:Musica {
     id: row.musica_id,
     titulo: row.titulo
 });
+
 Criando Artistas
 MERGE (:Artista {nome:"Ed Sheeran"})
 MERGE (:Artista {nome:"The Weeknd"})
 MERGE (:Artista {nome:"Dua Lipa"})
+
 Conectando Artista e Música
 MATCH (a:Artista {nome:"Ed Sheeran"})
 MATCH (m:Musica {titulo:"Shape of You"})
 MERGE (a)-[:CRIOU]->(m)
+
 Usuário ouvindo música
 MATCH (u:Usuario {nome:"Roberto"})
 MATCH (m:Musica {titulo:"Shape of You"})
 CREATE (u)-[:OUVIU {nota:5}]->(m)
 
-📊 6. Queries de Negócio
+📊 6. Queries de Negócio.
 
 Aqui estão alguns exemplos de perguntas que o grafo consegue responder.
 
-🎧 Músicas que meus amigos ouviram
+🎧 Músicas Que Meus Amigos Ouviram.
 
 MATCH (u:Usuario {nome:"Roberto"})-[:AMIGO_DE]->(amigo)
 
@@ -153,7 +155,7 @@ MATCH (amigo)-[:OUVIU]->(m:Musica)
 
 RETURN amigo.nome, m.titulo
 
-⭐ Músicas mais bem avaliadas
+⭐ Músicas Mais Bem Avaliadas.
 
 MATCH (u:Usuario)-[r:OUVIU]->(m:Musica)
 
@@ -161,7 +163,7 @@ RETURN m.titulo, avg(r.nota) as nota_media
 
 ORDER BY nota_media DESC
 
-🎤 Artistas mais populares
+🎤 Artistas Mais Populares.
 
 MATCH (u:Usuario)-[:SEGUE]->(a:Artista)
 
@@ -169,7 +171,7 @@ RETURN a.nome, count(*) as seguidores
 
 ORDER BY seguidores DESC
 
-🎼 Recomendar músicas com base em gênero favorito
+🎼 Recomendar Músicas Com Base Em Gênero Favorito.
 
 MATCH (u:Usuario {nome:"Roberto"})-[:GOSTA_DE]->(g:Genero)
 
@@ -179,13 +181,13 @@ MATCH (a)-[:CRIOU]->(m:Musica)
 
 RETURN m.titulo
 
-🖼️ 7. Evidências Visuais
+🖼️ 7. Evidências Visuais.
 
 As consultas foram visualizadas usando:
 
-Neo4j Browser
+- Neo4j Browser
 
-Neo4j Bloom
+- Neo4j Bloom
 
 Exemplos de visualizações:
 
@@ -196,7 +198,7 @@ recomendacao_por_genero.png
 
 Essas imagens demonstram as conexões entre usuários, músicas e artistas.
 
-🧪 8. Dificuldades Encontradas (Troubleshooting)
+🧪 8. Dificuldades Encontradas (Troubleshooting).
 
 Durante o desenvolvimento alguns problemas surgiram.
 
@@ -230,29 +232,29 @@ Isso não fazia sentido conceitualmente.
 A modelagem foi corrigida para:
 
 ARTISTA -> CRIOU -> MUSICA
-🚀 9. Possíveis Evoluções do Projeto
+
+🚀 9. Possíveis Evoluções do Projeto.
 
 Este projeto pode evoluir para:
 
-algoritmo de recomendação colaborativa
+- Algoritmo de recomendação colaborativa
 
-uso da Graph Data Science Library
+- Uso da Graph Data Science Library
 
-detecção de usuários com gosto musical semelhante
+- Detecção de usuários com gosto musical semelhante
 
-recomendação automática baseada em similaridade
+- Recomendação automática baseada em similaridade
 
 📚 10. Conclusão
 
 Este projeto demonstra como bancos de dados em grafo são extremamente úteis para sistemas de recomendação.
+Mesmo sendo um protótipo simples, aqui não usei tabelas tradicionais em banco de dados, ele mostra:
 
-Mesmo sendo um protótipo simples, ele mostra:
+- Modelagem de dados conectados
 
-modelagem de dados conectados
+- Consultas de recomendação
 
-consultas de recomendação
-
-análise de comportamento de usuários
+- Análise de comportamento de usuários
 
 Esse tipo de arquitetura é utilizado em diversas plataformas modernas de recomendação.
 
@@ -260,27 +262,27 @@ Esse tipo de arquitetura é utilizado em diversas plataformas modernas de recome
 
 ## OBSERVAÇÕES E AJUSTES:
 
-🔎 1. Estrutura Geral do Grafo
+🔎 1. Estrutura Geral do Grafo.
 
 Eu utilizei corretamente 4 tipos principais de nós:
 
-Node	Função
+- Node	 Função
 
-USUÁRIO	pessoas que usam a plataforma
+- USUÁRIO	pessoas que usam a plataforma
 
-MÚSICA	músicas disponíveis
+- MÚSICA	músicas disponíveis
 
-ARTISTA	criadores das músicas
+- ARTISTA	criadores das músicas
 
-GÊNERO	categoria musical
+- GÊNERO	categoria musical
 
 Essa estrutura é exatamente o que plataformas de streaming utilizam como base conceitual.
 
-✔ Modelagem correta
+✔ Modelagem correta.
 
 🔗 2. Relacionamentos que eu modelei.
 
-Observei os seguintes relacionamentos no meu grafo:
+Observei os seguintes relacionamentos no meu grafo.
 
 Relação	Avaliação:
 
@@ -312,26 +314,26 @@ Esses caminhos são exatamente o que algoritmos de grafos exploram.
 
 Meu grafo agora permite 3 tipos de recomendação.
 
-1️⃣ Recomendação social
+1️⃣ Recomendação Social.
 Usuário → Amigo → Ouviu → Música
 
 "Usuários ouvem músicas que seus amigos gostam."
 
-2️⃣ Recomendação por gosto musical
+2️⃣ Recomendação Por Gosto Musical.
 Usuário → Curtiu → Gênero → Artista → Música
 
 "Usuários recebem músicas do gênero que gostam."
 
-3️⃣ Recomendação por artista
+3️⃣ Recomendação por Artista.
 Usuário → Segue → Artista → Criou → Música
 
 "Usuário recebe novas músicas do artista que segue."
 
 ⚠️ 4. Pequenas melhorias que eu fiz (opcional)
 
-Meu modelo já funciona, mas alguns ajustes podem deixá-lo ainda mais profissional.
+Meu modelo já funciona, mas alguns ajustes deixou ainda mais profissional.
 
-1️⃣ Padronizar nomes dos relacionamentos
+1️⃣ Padronizar Nomes dos Relacionamentos.
 
 Neo4j recomenda usar maiúsculas com underscore.
 
@@ -345,7 +347,7 @@ CRIOU
 PERTENCE_A
 RECOMENDA
 
-2️⃣ Adicionei propriedades importantes
+2️⃣ Adicionei Propriedades Importantes
 
 Exemplo:
 
@@ -358,7 +360,8 @@ vezes
 RECOMENDA
 
 data
-3️⃣ Evitar duplicação de relação AMIGO
+
+3️⃣ Evitar Duplicação de Relação AMIGO
 
 Em grafos sociais normalmente é usado:
 
@@ -366,7 +369,7 @@ Em grafos sociais normalmente é usado:
 
 Sem direção.
 
-🧠 5. Estrutura final ideal do seu grafo
+🧠 5. Estrutura Final Ideal do Meu Grafo.
 
 Visualmente ficaria assim:
 
@@ -384,7 +387,7 @@ Visualmente ficaria assim:
 
 (:Artista)-[:PERTENCE_A]->(:Genero)
 
-📊 6. Avaliação do seu grafo (como avaliador técnico)
+📊 6. Avaliação do Meu Grafo (como avaliador técnico)
 
 Critério	Nota
 
@@ -400,10 +403,10 @@ Uso para recomendação	⭐⭐⭐⭐⭐
 
 Para um iniciante em grafos, esse modelo já demonstra:
 
-pensamento em grafos
+- Pensamento em grafos
 
-modelagem correta
+- Modelagem correta
 
-visão de recomendação
+- Visão de recomendação
 
-Isso fica muito bom em um portfólio no GitHub.
+Isso ficou muito bom em meu portfólio no GitHub.
