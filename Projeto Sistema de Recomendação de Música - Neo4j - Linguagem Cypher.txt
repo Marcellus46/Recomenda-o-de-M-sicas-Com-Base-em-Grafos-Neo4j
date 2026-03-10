@@ -1,0 +1,12 @@
+Projeto Sistema de Recomendação de Música Streaming - Neo4j
+
+Linguagem Cypher
+
+CREATE (n12)<-[:SEGUE]-(`USUÁRIO 3`:`Janaína` {ID: 55478})-[:AMIGO_DE]->(`USUÁRIO 4`:LIKA {ID: 12345})<-[:RECOMENDOU {Data: "08/10/2025"}]-(n5)<-[:OUVIU {Nota: 8, Data: "05/10/2025", Vezes: 20}]-(`USUÁRIO 2`:`Mérvio` {ID: 98765})<-[:AMIGO_DE]-(`USUÁRIO 1`:`Tício` {ID: 54321})-[:OUVIU {Nota: 5, Data: "10/08/2025", Vezes: 15}]->(n2)-[:RECOMENDOU {Data: "12/08/2025"}]->(`USUÁRIO 3`)-[:OUVIU {Nota: 7}]->(n11)-[:RECOMENDOU {Data: "20/09/2025"}]->(`USUÁRIO 5`:Roberto {ID: 43691})<-[:AMIGO_DE]-(`USUÁRIO 4`),
+(n2)<-[:CRIOU]-(n1)-[:PERTENCE_A]->()<-[:CURTIU]-(`USUÁRIO 1`),
+(n5)<-[:CRIOU]-(n6)-[:PERTENCE_A]->()<-[:CURTIU]-(`USUÁRIO 2`),
+(n6)<-[:SEGUE]-(`USUÁRIO 2`)-[:AMIGO_DE]->(`USUÁRIO 4`)-[:OUVIU {Nota: 8, Data: "20/09/2025", Vezes: 30}]->(n14)<-[:CRIOU]-(n15)<-[:SEGUE]-(`USUÁRIO 4`)-[:CURTIU]->(n16),
+(n11)<-[:CRIOU]-(n12)-[:PERTENCE_A]->()<-[:CURTIU]-(`USUÁRIO 3`)<-[:RECOMENDOU {Data: "22/09/2025"}]-(n14),
+(`USUÁRIO 3`)-[:AMIGO_DE]->(`USUÁRIO 5`)-[:OUVIU {Nota: 7, Data: "18/09/2025", Vezes: 15}]->()<-[:CRIOU]-(n18)<-[:SEGUE]-(`USUÁRIO 5`)-[:Curtiu]->()<-[:PERTENCE_A]-(n18),
+(n15)-[:PERTENCE_A]->(n16),
+(`USUÁRIO 1`)-[:SEGUE]->(n1)
